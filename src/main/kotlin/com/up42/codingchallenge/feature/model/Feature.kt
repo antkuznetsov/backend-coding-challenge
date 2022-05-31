@@ -12,7 +12,8 @@ data class Feature(
     var timestamp: Long?,
     var beginViewingDate: Long?,
     var endViewingDate: Long?,
-    var missionName: String?
+    var missionName: String?,
+    var quicklook: String?
 ) {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -21,6 +22,7 @@ data class Feature(
         var timestamp: Long?,
         @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
         var acquisition: Acquisition? = null,
+        var quicklook: String?
     ) {
 
         @JsonIgnoreProperties(ignoreUnknown = true)

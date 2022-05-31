@@ -23,6 +23,7 @@ class FeatureFileRepository : FeatureRepository {
             beginViewingDate = properties?.acquisition?.beginViewingDate
             endViewingDate = properties?.acquisition?.endViewingDate
             missionName = properties?.acquisition?.missionName
+            quicklook = properties?.quicklook
         }
     }.ifEmpty {
         throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "No features found")
