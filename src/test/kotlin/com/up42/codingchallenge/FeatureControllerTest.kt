@@ -11,7 +11,7 @@ import org.springframework.boot.web.server.LocalServerPort
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class FeaturesControllerTest {
+class FeatureControllerTest {
     @LocalServerPort
     var port: Int = 0
 
