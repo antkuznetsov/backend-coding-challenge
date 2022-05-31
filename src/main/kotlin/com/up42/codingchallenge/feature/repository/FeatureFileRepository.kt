@@ -8,6 +8,7 @@ import org.springframework.core.io.ClassPathResource
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Repository
 import org.springframework.web.server.ResponseStatusException
+import java.util.*
 
 @Repository
 class FeatureFileRepository : FeatureRepository {
@@ -29,5 +30,14 @@ class FeatureFileRepository : FeatureRepository {
 
     override fun findAll(): List<Feature> {
         return data
+    }
+
+    override fun findById(id: UUID): Feature? {
+        for (feature : Feature in data) {
+            if (feature.id == id) {
+                return feature
+            }
+        }
+        return null
     }
 }
