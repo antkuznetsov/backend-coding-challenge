@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.http.MediaType
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -20,6 +21,11 @@ class FeatureControllerTest {
     fun beforeAll() {
         RestAssured.port = port
     }
+
+    data class ExpectedError(
+        val code: Int,
+        val message: String,
+    )
 
     @Test
     fun `should return all features`() {
@@ -183,11 +189,6 @@ class FeatureControllerTest {
 
     @Test
     fun `should return FeatureNotFoundException error`() {
-        data class ExpectedError(
-            val code: Int,
-            val message: String,
-        )
-
         val expectedError = ExpectedError(
             code = 404,
             message = "Could not find the feature bd2cbad1-6ccf-48e3-bb92-bc9961bc011e",
@@ -195,6 +196,48 @@ class FeatureControllerTest {
 
         given()
             .get("/features/bd2cbad1-6ccf-48e3-bb92-bc9961bc011e")
+            .then()
+            .statusCode(404)
+            .also { validatableResponse ->
+                validatableResponse.body("code", equalTo(expectedError.code))
+                    .body("message", equalTo(expectedError.message))
+            }
+    }
+
+    @Test
+    fun `should return quicklook`() {
+        given()
+            .get("/features/39c2f29e-c0f8-4a39-a98b-deed547d6aea/quicklook")
+            .then()
+            .statusCode(200)
+            .contentType(MediaType.IMAGE_PNG_VALUE)
+    }
+
+    @Test
+    fun `should return QuicklookNotFoundException error`() {
+        val expectedError = ExpectedError(
+            code = 404,
+            message = "Could not find the quicklook for the feature b0d3bf6a-ff54-49e0-a4cb-e57dcb68d3b5",
+        )
+
+        given()
+            .get("/features/b0d3bf6a-ff54-49e0-a4cb-e57dcb68d3b5/quicklook")
+            .then()
+            .also { validatableResponse ->
+                validatableResponse.body("code", equalTo(expectedError.code))
+                    .body("message", equalTo(expectedError.message))
+            }
+    }
+
+    @Test
+    fun `should return FeatureNotFoundException error for quicklook`() {
+        val expectedError = ExpectedError(
+            code = 404,
+            message = "Could not find the feature bd2cbad1-6ccf-48e3-bb92-bc9961bc011e",
+        )
+
+        given()
+            .get("/features/bd2cbad1-6ccf-48e3-bb92-bc9961bc011e/quicklook")
             .then()
             .statusCode(404)
             .also { validatableResponse ->
