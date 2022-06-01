@@ -3,6 +3,7 @@ package com.up42.codingchallenge.feature
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.startsWith
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -143,6 +144,62 @@ class FeatureControllerTest {
                         .body("endViewingDate[${feature.key}]", equalTo(feature.value.endViewingDate))
                         .body("missionName[${feature.key}]", equalTo(feature.value.missionName))
                 }
+            }
+    }
+
+    @Test
+    fun `should return one feature`() {
+        data class ExpectedFeature(
+            val id: String,
+            val timestamp: Long,
+            val beginViewingDate: Long,
+            val endViewingDate: Long,
+            val missionName: String,
+            val quicklook: String
+        )
+
+        val expectedFeature = ExpectedFeature(
+            id = "39c2f29e-c0f8-4a39-a98b-deed547d6aea",
+            timestamp = 1554831167697,
+            beginViewingDate = 1554831167697,
+            endViewingDate = 1554831202043,
+            missionName = "Sentinel-1B",
+            quicklook = "iVBORw0KGgoAAAANSUhEUgAAAgAAAA"
+        )
+
+        given()
+            .get("/features/39c2f29e-c0f8-4a39-a98b-deed547d6aea")
+            .then()
+            .statusCode(200)
+            .also { validatableResponse ->
+                validatableResponse.body("id", equalTo(expectedFeature.id))
+                    .body("timestamp", equalTo(expectedFeature.timestamp))
+                    .body("beginViewingDate", equalTo(expectedFeature.beginViewingDate))
+                    .body("endViewingDate", equalTo(expectedFeature.endViewingDate))
+                    .body("missionName", equalTo(expectedFeature.missionName))
+                    .body("quicklook", startsWith(expectedFeature.quicklook))
+            }
+    }
+
+    @Test
+    fun `should return FeatureNotFoundException error`() {
+        data class ExpectedError(
+            val code: Int,
+            val message: String,
+        )
+
+        val expectedError = ExpectedError(
+            code = 404,
+            message = "Could not find the feature bd2cbad1-6ccf-48e3-bb92-bc9961bc011e",
+        )
+
+        given()
+            .get("/features/bd2cbad1-6ccf-48e3-bb92-bc9961bc011e")
+            .then()
+            .statusCode(404)
+            .also { validatableResponse ->
+                validatableResponse.body("code", equalTo(expectedError.code))
+                    .body("message", equalTo(expectedError.message))
             }
     }
 }
