@@ -14,6 +14,8 @@ import org.springframework.http.MediaType
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class FeatureControllerTest {
+    val rootUrl = "/v1"
+
     @LocalServerPort
     var port: Int = 0
 
@@ -139,7 +141,7 @@ class FeatureControllerTest {
         )
 
         given()
-            .get("/features")
+            .get("$rootUrl/features")
             .then()
             .statusCode(200)
             .also { validatableResponse ->
@@ -174,7 +176,7 @@ class FeatureControllerTest {
         )
 
         given()
-            .get("/features/39c2f29e-c0f8-4a39-a98b-deed547d6aea")
+            .get("$rootUrl/features/39c2f29e-c0f8-4a39-a98b-deed547d6aea")
             .then()
             .statusCode(200)
             .also { validatableResponse ->
@@ -195,7 +197,7 @@ class FeatureControllerTest {
         )
 
         given()
-            .get("/features/bd2cbad1-6ccf-48e3-bb92-bc9961bc011e")
+            .get("$rootUrl/features/bd2cbad1-6ccf-48e3-bb92-bc9961bc011e")
             .then()
             .statusCode(404)
             .also { validatableResponse ->
@@ -207,7 +209,7 @@ class FeatureControllerTest {
     @Test
     fun `should return quicklook`() {
         given()
-            .get("/features/39c2f29e-c0f8-4a39-a98b-deed547d6aea/quicklook")
+            .get("$rootUrl/features/39c2f29e-c0f8-4a39-a98b-deed547d6aea/quicklook")
             .then()
             .statusCode(200)
             .contentType(MediaType.IMAGE_PNG_VALUE)
@@ -221,7 +223,7 @@ class FeatureControllerTest {
         )
 
         given()
-            .get("/features/b0d3bf6a-ff54-49e0-a4cb-e57dcb68d3b5/quicklook")
+            .get("$rootUrl/features/b0d3bf6a-ff54-49e0-a4cb-e57dcb68d3b5/quicklook")
             .then()
             .also { validatableResponse ->
                 validatableResponse.body("code", equalTo(expectedError.code))
@@ -237,7 +239,7 @@ class FeatureControllerTest {
         )
 
         given()
-            .get("/features/bd2cbad1-6ccf-48e3-bb92-bc9961bc011e/quicklook")
+            .get("$rootUrl/features/bd2cbad1-6ccf-48e3-bb92-bc9961bc011e/quicklook")
             .then()
             .statusCode(404)
             .also { validatableResponse ->
