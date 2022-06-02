@@ -3,7 +3,12 @@ package com.up42.codingchallenge.feature.web
 import com.up42.codingchallenge.feature.FeatureService
 import com.up42.codingchallenge.feature.web.dto.FeatureDetailDto
 import com.up42.codingchallenge.feature.web.dto.FeaturePreviewDto
-import io.swagger.annotations.ApiOperation
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.ArraySchema
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.CacheControl
@@ -18,12 +23,17 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
 @RestController()
-@RequestMapping("/features")
+@RequestMapping("/v1/features")
 class FeatureController(private val service: FeatureService) {
     var logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
     @GetMapping()
-    @ApiOperation(value = "Return all features.")
+    @Operation(summary = "Get all features")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Found features", content = [
+            (Content(mediaType = "application/json", array = (
+                    ArraySchema(schema = Schema(implementation = FeaturePreviewDto::class)))))])]
+    )
     fun getFeatures(): List<FeaturePreviewDto> {
         logger.debug("/features endpoint was executed!")
         val featureList = service.getAllFeatures()
@@ -31,7 +41,13 @@ class FeatureController(private val service: FeatureService) {
     }
 
     @GetMapping("/{id}")
-    @ApiOperation(value = "Return one feature by its id.")
+    @Operation(summary = "Get one feature by its id")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Found feature", content = [
+            (Content(mediaType = "application/json", array = (
+                    ArraySchema(schema = Schema(implementation = FeatureDetailDto::class)))))]),
+        ApiResponse(responseCode = "404", description = "Feature is not found", content = [Content()])]
+    )
     fun getFeature(@PathVariable id: UUID): FeatureDetailDto {
         logger.debug("/features/{id} endpoint was executed!")
         val feature = service.getFeature(id)
@@ -39,7 +55,13 @@ class FeatureController(private val service: FeatureService) {
     }
 
     @GetMapping("/{id}/quicklook")
-    @ApiOperation(value = "Return quicklook for a feature by its id.")
+    @Operation(summary = "Get quicklook for a feature by feature's id")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Found quicklook", content = [
+            (Content(mediaType = "image/png"))]),
+        ApiResponse(responseCode = "404", description = "Feature is not found", content = [Content()]),
+        ApiResponse(responseCode = "406", description = "Quicklook for this feature doesn't exist", content = [Content()])]
+    )
     fun getQuicklook(@PathVariable id: UUID): ResponseEntity<ByteArray> {
         logger.debug("/features/{id}/quicklook endpoint was executed!")
 

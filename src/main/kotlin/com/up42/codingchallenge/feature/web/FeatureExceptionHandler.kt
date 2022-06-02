@@ -18,7 +18,7 @@ class FeatureExceptionHandler {
 
     @ExceptionHandler(QuicklookNotFoundException::class)
     fun quicklookNotFoundHandler(ex: QuicklookNotFoundException): ResponseEntity<FeatureErrorDto> {
-        val error = FeatureErrorDto(HttpStatus.NOT_FOUND.value(), ex.message)
-        return ResponseEntity(error, HttpStatus.NOT_FOUND)
+        val error = FeatureErrorDto(HttpStatus.NOT_ACCEPTABLE.value(), ex.message)
+        return ResponseEntity(error, HttpStatus.NOT_ACCEPTABLE)
     }
 }
