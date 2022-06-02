@@ -25,6 +25,8 @@ dependencies {
     implementation("io.springfox:springfox-swagger-ui:3.0.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.rest-assured:rest-assured")
+    testImplementation("org.mockito:mockito-core:4.5.1")
+    testImplementation("net.bytebuddy:byte-buddy:1.12.10")
 }
 
 tasks.withType<KotlinCompile> {
