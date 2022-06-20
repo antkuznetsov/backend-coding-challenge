@@ -218,7 +218,7 @@ class FeatureControllerTest {
     @Test
     fun `should return QuicklookNotFoundException error`() {
         val expectedError = ExpectedError(
-            code = 404,
+            code = 406,
             message = "Could not find the quicklook for the feature b0d3bf6a-ff54-49e0-a4cb-e57dcb68d3b5",
         )
 
